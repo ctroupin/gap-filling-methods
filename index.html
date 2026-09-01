@@ -22,12 +22,14 @@
        diagram for visual continuity across the project's deliverables.
        Cycled via getFamilyColor() below if more families appear than
        colors listed here. */
-    --c-gray:   #6b7268;
-    --c-blue:   #185fa5;
-    --c-teal:   #0f6e56;
-    --c-purple: #534ab7;
-    --c-coral:  #b04a25;
-    --c-pink:   #99355a;
+    --c-gray:   #a6cee3;
+    --c-blue:   #1f78b4;
+    --c-teal:   #b2df8a;
+    --c-purple: #33a02c;
+    --c-coral:  #fb9a99;
+    --c-pink:   #e31a1c;
+    --c-pppp:   #fdbf6f;
+    --c-rrrr:   #ff7f00;
   }
 
   * { box-sizing: border-box; }
@@ -147,6 +149,7 @@
     border-radius: 10px;
     padding: 14px 18px;
     min-width: 150px;
+    text-align: center;
   }
 
   .metric-card .metric-label {
@@ -278,7 +281,7 @@
 
 <header>
   <h1>Gap-filling methods explorer</h1>
-  <p>Browse gap-filling and gridding techniques for ocean satellite, HF-radar, and in-situ data. Switch between datasets using the tabs below, then filter by method family, open-source availability, citation count, and publication year.</p>
+  <p>Browse gap-filling techniques for satellite, HF-radar, and in-situ data over the ocean.<br> Switch between datasets using the tabs below, then filter by method family, open-source availability, citation count, and publication year.</p>
 </header>
 
 <main>
@@ -321,7 +324,7 @@
 
   <section id="metrics">
     <div class="metric-card">
-      <div class="metric-label">Methods shown</div>
+      <div class="metric-label">Number of papers</div>
       <div class="metric-value" id="metric-total">&mdash;</div>
     </div>
     <div class="metric-card">
@@ -339,7 +342,7 @@
   </section>
 
   <section>
-    <h2>Publications by year and method family</h2>
+    <h2>Publications by year and by method family</h2>
     <div id="chart-container">
       <div id="year-histogram"></div>
       <div id="chart-empty-note" style="display:none;"></div>
@@ -353,10 +356,6 @@
   </section>
 
 </main>
-
-<footer>
-  Built with <a href="https://plotly.com/javascript/" style="color:inherit;">Plotly.js</a> &middot; data loaded per-tab from <code>data-satellite.csv</code>, <code>data-insitu.csv</code>, <code>data-hfradar.csv</code>
-</footer>
 
 <script>
 // ---------------------------------------------------------------------
@@ -377,15 +376,16 @@ let currentDatasetId = null;
 // actually use keeps colors stable across reloads (JS re-derives colors
 // from data order otherwise, which can shift as rows are added/removed).
 const FAMILY_PALETTE = [
-  "#185fa5", // blue
-  "#0f6e56", // teal
-  "#534ab7", // purple
-  "#b04a25", // coral
-  "#99355a", // pink
-  "#6b7268", // gray
-  "#3f7d20", // olive (extra, for a 7th+ family)
-  "#a6631b", // amber (extra)
+"#a6cee3",
+"#1f78b4",
+"#b2df8a",
+"#33a02c",
+"#fb9a99",
+"#e31a1c",
+"#fdbf6f",
+"#ff7f00",
 ];
+
 
 const familyColorCache = {};
 function getFamilyColor(family) {
@@ -518,7 +518,8 @@ function rebuildFamilyFilter() {
   // since each dataset (satellite/in-situ/HF radar) has different
   // families. innerHTML replacement means these listeners never
   // duplicate, unlike the static filters above.
-  const families = [...new Set(allRows.map(r => r.family))].sort();
+  const families = [...new Set(allRows.map(r => r.family))];
+  console.log(families);
   const familyContainer = document.getElementById("family-filter");
   familyContainer.innerHTML = families.map(f =>
     `<label><input type="checkbox" value="${escapeHtml(f)}" checked> ${escapeHtml(f)}</label>`
@@ -627,7 +628,8 @@ function renderChart(rows) {
   chartDiv.style.display = "block";
   emptyNote.style.display = "none";
 
-  const families = [...new Set(rowsWithYear.map(r => r.family))].sort();
+  const families = [...new Set(rowsWithYear.map(r => r.family))].reverse();
+  console.log(families);
   const traces = families.map(family => ({
     x: rowsWithYear.filter(r => r.family === family).map(r => r.year),
     type: "histogram",
@@ -642,8 +644,8 @@ function renderChart(rows) {
     bargap: 0.05,
     height: 380,
     margin: { t: 20, r: 20, b: 40, l: 50 },
-    xaxis: { title: "Publication year", dtick: 5 },
-    yaxis: { title: "Number of methods" },
+    xaxis: { title: "Publication year", dtick: 5 , range: [2000, 2027]},
+    yaxis: { title: "Number of papers" },
     legend: { orientation: "h", y: -0.25 },
     font: { family: "-apple-system, Helvetica, Arial, sans-serif", size: 12 },
     paper_bgcolor: "rgba(0,0,0,0)",
