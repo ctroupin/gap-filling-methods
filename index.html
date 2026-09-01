@@ -1,0 +1,694 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Gap-filling methods explorer</title>
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/plotly.js/2.32.0/plotly.min.js"></script>
+
+<style>
+  :root {
+    --bg: #f5f6f4;
+    --panel: #ffffff;
+    --border: #d8dbd6;
+    --text: #1b1f1d;
+    --text-dim: #5c625e;
+    --accent: #0f6e56;
+
+    /* Method-family palette -- reused from the Julia dashboard / TikZ
+       diagram for visual continuity across the project's deliverables.
+       Cycled via getFamilyColor() below if more families appear than
+       colors listed here. */
+    --c-gray:   #6b7268;
+    --c-blue:   #185fa5;
+    --c-teal:   #0f6e56;
+    --c-purple: #534ab7;
+    --c-coral:  #b04a25;
+    --c-pink:   #99355a;
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--text);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+    font-size: 15px;
+    line-height: 1.5;
+  }
+
+  header {
+    padding: 32px 28px 20px;
+    border-bottom: 1px solid var(--border);
+    background: var(--panel);
+  }
+
+  header h1 {
+    margin: 0 0 6px;
+    font-size: 22px;
+    font-weight: 700;
+    letter-spacing: -0.01em;
+  }
+
+  header p {
+    margin: 0;
+    color: var(--text-dim);
+    max-width: 640px;
+  }
+
+  main {
+    padding: 24px 28px 60px;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+
+  section {
+    margin-bottom: 28px;
+  }
+
+  section h2 {
+    font-size: 13px;
+    font-weight: 700;
+    text-transform: none;
+    color: var(--text-dim);
+    margin: 0 0 12px;
+  }
+
+  /* --- Filters --- */
+  #filters {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 28px;
+    padding: 18px 20px;
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+  }
+
+  .filter-group {
+    min-width: 200px;
+  }
+
+  .filter-group > .label {
+    font-weight: 600;
+    font-size: 13px;
+    margin-bottom: 8px;
+    display: block;
+  }
+
+  .checkbox-list label {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 14px;
+    margin-bottom: 4px;
+    cursor: pointer;
+  }
+
+  .checkbox-list input { cursor: pointer; }
+
+  .range-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .range-row input[type="range"] { flex: 1; }
+  .range-row output { font-variant-numeric: tabular-nums; min-width: 3ch; text-align: right; }
+
+  .year-inputs {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .year-inputs input[type="number"] {
+    width: 80px;
+    padding: 5px 7px;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    font-size: 14px;
+  }
+
+  /* --- Metric cards --- */
+  #metrics {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+  }
+
+  .metric-card {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 14px 18px;
+    min-width: 150px;
+  }
+
+  .metric-card .metric-label {
+    font-size: 12px;
+    color: var(--text-dim);
+    margin-bottom: 4px;
+  }
+
+  .metric-card .metric-value {
+    font-size: 26px;
+    font-weight: 700;
+  }
+
+  /* --- Chart --- */
+  #chart-container {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 12px;
+  }
+
+  #chart-empty-note {
+    padding: 40px 20px;
+    text-align: center;
+    color: var(--text-dim);
+  }
+
+  /* --- Table --- */
+  #table-container {
+    overflow-x: auto;
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+  }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13.5px;
+  }
+
+  th, td {
+    padding: 8px 10px;
+    text-align: left;
+    vertical-align: top;
+    border-bottom: 1px solid var(--border);
+  }
+
+  th {
+    font-weight: 700;
+    white-space: nowrap;
+    background: #fafbf9;
+  }
+
+  td.method-description { max-width: 320px; }
+
+  .family-chip {
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: 999px;
+    font-size: 12px;
+    font-weight: 600;
+    color: #fff;
+    white-space: nowrap;
+  }
+
+  a.doi-link, a.repo-link {
+    color: var(--accent);
+    text-decoration: none;
+  }
+  a.doi-link:hover, a.repo-link:hover { text-decoration: underline; }
+  a.repo-link { font-size: 16px; }
+
+  #result-count {
+    font-weight: 600;
+    margin-bottom: 10px;
+  }
+
+  /* --- Dataset tabs --- */
+  #dataset-tabs {
+    display: flex;
+    gap: 4px;
+    margin-bottom: 24px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  #dataset-tabs button {
+    appearance: none;
+    background: none;
+    border: none;
+    border-bottom: 2px solid transparent;
+    padding: 10px 4px;
+    margin-right: 20px;
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--text-dim);
+    cursor: pointer;
+    font-family: inherit;
+  }
+
+  #dataset-tabs button:hover { color: var(--text); }
+
+  #dataset-tabs button.active {
+    color: var(--accent);
+    border-bottom-color: var(--accent);
+  }
+
+  #dataset-tabs button:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+  }
+
+  #dataset-load-note {
+    color: var(--text-dim);
+    font-size: 13px;
+    padding: 20px;
+    text-align: center;
+  }
+
+  footer {
+    text-align: center;
+    color: var(--text-dim);
+    font-size: 12px;
+    padding: 24px;
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>Gap-filling methods explorer</h1>
+  <p>Browse gap-filling and gridding techniques for ocean satellite, HF-radar, and in-situ data. Switch between datasets using the tabs below, then filter by method family, open-source availability, citation count, and publication year.</p>
+</header>
+
+<main>
+
+  <nav id="dataset-tabs" role="tablist" aria-label="Dataset"></nav>
+  <div id="dataset-load-note" style="display:none;"></div>
+
+  <section id="filters">
+    <div class="filter-group">
+      <span class="label">Method family</span>
+      <div id="family-filter" class="checkbox-list"></div>
+    </div>
+
+    <div class="filter-group">
+      <span class="label">Open source</span>
+      <div id="opensource-filter" class="checkbox-list">
+        <label><input type="checkbox" value="Yes" checked> Open source</label>
+        <label><input type="checkbox" value="No" checked> Not open source</label>
+        <label><input type="checkbox" value="Unknown" checked> Unknown</label>
+      </div>
+    </div>
+
+    <div class="filter-group">
+      <span class="label">Minimum citations</span>
+      <div class="range-row">
+        <input type="range" id="citation-filter" min="0" max="0" value="0" step="1">
+        <output id="citation-filter-value">0</output>
+      </div>
+    </div>
+
+    <div class="filter-group">
+      <span class="label">Publication year</span>
+      <div class="year-inputs">
+        <input type="number" id="year-min" placeholder="From">
+        <span>&ndash;</span>
+        <input type="number" id="year-max" placeholder="To">
+      </div>
+    </div>
+  </section>
+
+  <section id="metrics">
+    <div class="metric-card">
+      <div class="metric-label">Methods shown</div>
+      <div class="metric-value" id="metric-total">&mdash;</div>
+    </div>
+    <div class="metric-card">
+      <div class="metric-label">Open source</div>
+      <div class="metric-value" id="metric-opensource-pct">&mdash;</div>
+    </div>
+    <div class="metric-card">
+      <div class="metric-label">Avg. citations</div>
+      <div class="metric-value" id="metric-avg-citations">&mdash;</div>
+    </div>
+    <div class="metric-card">
+      <div class="metric-label">Max. citations</div>
+      <div class="metric-value" id="metric-max-citations">&mdash;</div>
+    </div>
+  </section>
+
+  <section>
+    <h2>Publications by year and method family</h2>
+    <div id="chart-container">
+      <div id="year-histogram"></div>
+      <div id="chart-empty-note" style="display:none;"></div>
+    </div>
+  </section>
+
+  <section>
+    <h2 id="result-count-heading">Methods</h2>
+    <div id="result-count"></div>
+    <div id="table-container"></div>
+  </section>
+
+</main>
+
+<footer>
+  Built with <a href="https://plotly.com/javascript/" style="color:inherit;">Plotly.js</a> &middot; data loaded per-tab from <code>data-satellite.csv</code>, <code>data-insitu.csv</code>, <code>data-hfradar.csv</code>
+</footer>
+
+<script>
+// ---------------------------------------------------------------------
+// Configuration
+// ---------------------------------------------------------------------
+
+// One entry per tab. `file` is fetched fresh on each tab switch.
+const DATASETS = [
+  { id: "satellite", label: "Satellite", file: "satellite.csv" },
+  { id: "insitu",    label: "In situ",   file: "insitu.csv" },
+  { id: "hfradar",   label: "HF radar",  file: "hfradar.csv" },
+];
+
+let currentDatasetId = null;
+
+// Fixed palette, cycled if more families appear in the data than colors
+// listed here. Keeping this list matched to the family names you
+// actually use keeps colors stable across reloads (JS re-derives colors
+// from data order otherwise, which can shift as rows are added/removed).
+const FAMILY_PALETTE = [
+  "#185fa5", // blue
+  "#0f6e56", // teal
+  "#534ab7", // purple
+  "#b04a25", // coral
+  "#99355a", // pink
+  "#6b7268", // gray
+  "#3f7d20", // olive (extra, for a 7th+ family)
+  "#a6631b", // amber (extra)
+];
+
+const familyColorCache = {};
+function getFamilyColor(family) {
+  if (!(family in familyColorCache)) {
+    const idx = Object.keys(familyColorCache).length % FAMILY_PALETTE.length;
+    familyColorCache[family] = FAMILY_PALETTE[idx];
+  }
+  return familyColorCache[family];
+}
+
+// ---------------------------------------------------------------------
+// Data loading + cleaning
+// ---------------------------------------------------------------------
+
+let allRows = [];
+let hasYearColumn = false;
+
+function cleanRow(raw) {
+  const family = (raw["Method family"] || raw["Family"] || raw["Canonical Family"] || "Unspecified").trim() || "Unspecified";
+
+  let openSource = (raw["Open source"] || "").trim().toLowerCase();
+  if (["yes", "y", "true"].includes(openSource)) openSource = "Yes";
+  else if (["no", "n", "false"].includes(openSource)) openSource = "No";
+  else openSource = "Unknown";
+
+  const citationsRaw = (raw["Citations"] || "").toString().match(/\d+/);
+  const citations = citationsRaw ? parseInt(citationsRaw[0], 10) : null;
+
+  const yearRaw = (raw["Year"] || "").toString().match(/\d{4}/);
+  const year = yearRaw ? parseInt(yearRaw[0], 10) : null;
+
+  return {
+    family,
+    typeOfPaper: (raw["Type of paper"] || "").trim(),
+    description: (raw["Method description"] || "").trim(),
+    doi: (raw["DOI"] || raw["Publications"] || "").trim(),
+    citations,
+    openSource,
+    language: (raw["Language"] || "").trim(),
+    repository: (raw["Repository"] || "").trim(),
+    year,
+  };
+}
+
+function loadDataset(datasetId) {
+  const dataset = DATASETS.find(d => d.id === datasetId);
+  if (!dataset) return;
+
+  currentDatasetId = datasetId;
+  updateTabHighlight();
+
+  const note = document.getElementById("dataset-load-note");
+  note.style.display = "block";
+  note.textContent = `Loading ${dataset.label} data...`;
+  document.getElementById("table-container").innerHTML = "";
+
+  Papa.parse(dataset.file, {
+    download: true,
+    header: true,
+    skipEmptyLines: true,
+    complete: function (results) {
+      note.style.display = "none";
+      hasYearColumn = results.meta.fields.includes("Year");
+      allRows = results.data.map(cleanRow);
+      // Reset color assignments per dataset so colors are always
+      // collision-free within whichever tab is currently shown, even if
+      // cumulative distinct families across all tabs exceeds the
+      // palette size. (Trade-off: the same family name can get a
+      // different color on a different tab -- acceptable, since no two
+      // tabs are ever viewed side by side.)
+      Object.keys(familyColorCache).forEach(k => delete familyColorCache[k]);
+      resetFilterState();
+      rebuildFamilyFilter();
+      render();
+    },
+    error: function (err) {
+      note.style.display = "block";
+      note.textContent =
+        `Could not load ${dataset.file}. If you're viewing this file directly (file://), ` +
+        `browsers block local fetch() calls -- run a local server instead, e.g. ` +
+        `"python3 -m http.server", or view it via GitHub Pages.`;
+      allRows = [];
+      rebuildFamilyFilter();
+      render();
+    },
+  });
+}
+
+function initTabs() {
+  const nav = document.getElementById("dataset-tabs");
+  nav.innerHTML = DATASETS.map(d =>
+    `<button role="tab" id="tab-${d.id}" data-id="${d.id}">${escapeHtml(d.label)}</button>`
+  ).join("");
+  nav.querySelectorAll("button").forEach(btn => {
+    btn.addEventListener("click", () => loadDataset(btn.dataset.id));
+  });
+}
+
+function updateTabHighlight() {
+  document.querySelectorAll("#dataset-tabs button").forEach(btn => {
+    const active = btn.dataset.id === currentDatasetId;
+    btn.classList.toggle("active", active);
+    btn.setAttribute("aria-selected", active ? "true" : "false");
+  });
+}
+
+// ---------------------------------------------------------------------
+// Filter controls
+// ---------------------------------------------------------------------
+
+function initStaticFilterListeners() {
+  // Attached ONCE at page load -- these elements are static HTML (unlike
+  // the family checkboxes, which are rebuilt per dataset), so attaching
+  // their listeners inside a per-dataset function would stack duplicate
+  // listeners on every tab switch.
+  document.querySelectorAll("#opensource-filter input").forEach(el => el.addEventListener("change", render));
+
+  const citationSlider = document.getElementById("citation-filter");
+  citationSlider.addEventListener("input", () => {
+    document.getElementById("citation-filter-value").textContent = citationSlider.value;
+    render();
+  });
+
+  document.getElementById("year-min").addEventListener("input", render);
+  document.getElementById("year-max").addEventListener("input", render);
+}
+
+function rebuildFamilyFilter() {
+  // Family checkboxes -- rebuilt from scratch on every dataset switch,
+  // since each dataset (satellite/in-situ/HF radar) has different
+  // families. innerHTML replacement means these listeners never
+  // duplicate, unlike the static filters above.
+  const families = [...new Set(allRows.map(r => r.family))].sort();
+  const familyContainer = document.getElementById("family-filter");
+  familyContainer.innerHTML = families.map(f =>
+    `<label><input type="checkbox" value="${escapeHtml(f)}" checked> ${escapeHtml(f)}</label>`
+  ).join("");
+  familyContainer.querySelectorAll("input").forEach(el => el.addEventListener("change", render));
+}
+
+function resetFilterState() {
+  // Reset open-source checkboxes to all-checked
+  document.querySelectorAll("#opensource-filter input").forEach(el => { el.checked = true; });
+
+  // Recalculate + reset the citation slider for the new dataset's range
+  const citationValues = allRows.map(r => r.citations).filter(c => c !== null);
+  const maxCitations = citationValues.length ? Math.max(...citationValues) : 0;
+  const citationSlider = document.getElementById("citation-filter");
+  citationSlider.max = maxCitations;
+  citationSlider.value = 0;
+  document.getElementById("citation-filter-value").textContent = "0";
+
+  // Clear year range inputs
+  document.getElementById("year-min").value = "";
+  document.getElementById("year-max").value = "";
+}
+
+function getFilteredRows() {
+  const checkedFamilies = [...document.querySelectorAll("#family-filter input:checked")].map(el => el.value);
+  const checkedOpenSource = [...document.querySelectorAll("#opensource-filter input:checked")].map(el => el.value);
+  const minCitations = parseInt(document.getElementById("citation-filter").value, 10) || 0;
+  const yearMin = parseInt(document.getElementById("year-min").value, 10);
+  const yearMax = parseInt(document.getElementById("year-max").value, 10);
+
+  return allRows.filter(r => {
+    if (!checkedFamilies.includes(r.family)) return false;
+    if (!checkedOpenSource.includes(r.openSource)) return false;
+    if (minCitations > 0 && (r.citations === null || r.citations < minCitations)) return false;
+    if (!isNaN(yearMin) && (r.year === null || r.year < yearMin)) return false;
+    if (!isNaN(yearMax) && (r.year === null || r.year > yearMax)) return false;
+    return true;
+  });
+}
+
+// ---------------------------------------------------------------------
+// Rendering
+// ---------------------------------------------------------------------
+
+function escapeHtml(s) {
+  return (s || "").replace(/[&<>"']/g, c => ({
+    "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;"
+  }[c]));
+}
+
+function doiCell(doi) {
+  if (!doi) return "";
+  if (doi.startsWith("10.")) {
+    return `<a class="doi-link" href="https://doi.org/${encodeURI(doi)}" target="_blank" rel="noopener noreferrer">${escapeHtml(doi)}</a>`;
+  }
+  if (doi.toLowerCase().startsWith("arxiv:")) {
+    const id = doi.split(":").slice(1).join(":");
+    return `<a class="doi-link" href="https://arxiv.org/abs/${encodeURI(id)}" target="_blank" rel="noopener noreferrer">${escapeHtml(doi)}</a>`;
+  }
+  return escapeHtml(doi);
+}
+
+function repoCell(repo) {
+  if (!repo) return "";
+  if (repo.toLowerCase().startsWith("http")) {
+    const iconClass = repo.toLowerCase().includes("github.com") ? "fa-brands fa-github" : "fa-solid fa-link";
+    return `<a class="repo-link" href="${escapeHtml(repo)}" target="_blank" rel="noopener noreferrer"><i class="${iconClass}"></i></a>`;
+  }
+  return escapeHtml(repo);
+}
+
+function renderMetrics(rows) {
+  const n = rows.length;
+  document.getElementById("metric-total").textContent = n;
+
+  const openSourcePct = n === 0 ? "—" : Math.round(100 * rows.filter(r => r.openSource === "Yes").length / n) + "%";
+  document.getElementById("metric-opensource-pct").textContent = openSourcePct;
+
+  const citationValues = rows.map(r => r.citations).filter(c => c !== null);
+  document.getElementById("metric-avg-citations").textContent =
+    citationValues.length ? (citationValues.reduce((a, b) => a + b, 0) / citationValues.length).toFixed(1) : "—";
+  document.getElementById("metric-max-citations").textContent =
+    citationValues.length ? Math.max(...citationValues) : "—";
+}
+
+function renderChart(rows) {
+  const emptyNote = document.getElementById("chart-empty-note");
+  const chartDiv = document.getElementById("year-histogram");
+
+  if (!hasYearColumn) {
+    chartDiv.style.display = "none";
+    emptyNote.style.display = "block";
+    emptyNote.textContent = "No \"Year\" column found in this dataset -- add publication years to enable this chart.";
+    return;
+  }
+
+  const rowsWithYear = rows.filter(r => r.year !== null);
+  if (rowsWithYear.length === 0) {
+    chartDiv.style.display = "none";
+    emptyNote.style.display = "block";
+    emptyNote.textContent = "No publication years in the current selection.";
+    return;
+  }
+
+  chartDiv.style.display = "block";
+  emptyNote.style.display = "none";
+
+  const families = [...new Set(rowsWithYear.map(r => r.family))].sort();
+  const traces = families.map(family => ({
+    x: rowsWithYear.filter(r => r.family === family).map(r => r.year),
+    type: "histogram",
+    name: family,
+    marker: { color: getFamilyColor(family) },
+    xbins: { size: 1 },
+    autobinx: false,
+  }));
+
+  const layout = {
+    barmode: "stack",
+    bargap: 0.05,
+    height: 380,
+    margin: { t: 20, r: 20, b: 40, l: 50 },
+    xaxis: { title: "Publication year", dtick: 5 },
+    yaxis: { title: "Number of methods" },
+    legend: { orientation: "h", y: -0.25 },
+    font: { family: "-apple-system, Helvetica, Arial, sans-serif", size: 12 },
+    paper_bgcolor: "rgba(0,0,0,0)",
+    plot_bgcolor: "rgba(0,0,0,0)",
+  };
+
+  Plotly.react("year-histogram", traces, layout, { responsive: true, displaylogo: false });
+}
+
+function renderTable(rows) {
+  const headers = ["Family", "Type of paper", "Method description", "DOI", "Citations", "Open source", "Language", "Repository"];
+
+  let html = "<table><thead><tr>";
+  headers.forEach(h => html += `<th>${h}</th>`);
+  html += "</tr></thead><tbody>";
+
+  rows.forEach(r => {
+    html += "<tr>";
+    html += `<td><span class="family-chip" style="background:${getFamilyColor(r.family)};">${escapeHtml(r.family)}</span></td>`;
+    html += `<td>${escapeHtml(r.typeOfPaper)}</td>`;
+    html += `<td class="method-description">${escapeHtml(r.description)}</td>`;
+    html += `<td>${doiCell(r.doi)}</td>`;
+    html += `<td>${r.citations !== null ? r.citations : ""}</td>`;
+    html += `<td>${escapeHtml(r.openSource)}</td>`;
+    html += `<td>${escapeHtml(r.language)}</td>`;
+    html += `<td style="text-align:center;">${repoCell(r.repository)}</td>`;
+    html += "</tr>";
+  });
+
+  html += "</tbody></table>";
+  document.getElementById("table-container").innerHTML = html;
+}
+
+function render() {
+  const rows = getFilteredRows();
+  document.getElementById("result-count").textContent = `${rows.length} of ${allRows.length} methods shown`;
+  renderMetrics(rows);
+  renderChart(rows);
+  renderTable(rows);
+}
+
+initTabs();
+initStaticFilterListeners();
+loadDataset(DATASETS[0].id);
+</script>
+
+</body>
+</html>
