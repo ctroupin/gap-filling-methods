@@ -1,0 +1,26 @@
+[deps]
+CFTime = "179af706-886a-5703-950a-314cd64e0468"
+CSV = "336ed68f-0bac-5ca0-87d4-7b16caf5d00b"
+CUDA = "052768ef-5323-5732-b1bb-66c8b64840ba"
+CairoMakie = "13f3f980-e62b-5c42-98c6-ff1f3baf88f0"
+Colors = "5ae59095-9a9b-59fe-a467-6f913c188581"
+DINCAE = "0d879ee6-e5ed-4b6f-b65c-f78122b59944"
+DINCAE_utils = "f57bf84d-b539-49ae-ba98-20864a537a16"
+DataStructures = "864edb3b-99cc-5e75-8d2d-829cb0a9cfe8"
+GeoDatasets = "ddc7317b-88db-5cb5-a849-8449e5df04f9"
+GeoJSON = "61d90e0f-e114-555e-ac52-39dfb47a3ef9"
+GeoMakie = "db073c08-6b98-4ee5-b6a4-5efafb3259c6"
+Glob = "c27321d9-0574-5035-807b-f59d2c89b15c"
+GoogleSheets = "831f653e-6dbc-49a2-ac93-eebfaa09c6e6"
+JuliaFormatter = "98e50ef6-434e-11e9-1051-2b60c6c9e899"
+JupyterFormatter = "b8b539d8-55b4-4e60-a505-d7876c054e58"
+Makie = "ee78f7c6-11fb-53f2-987a-cfe4a2b5a57a"
+NCDatasets = "85f8d34a-cbdd-5861-8df4-14fed0d494ab"
+NaNStatistics = "b946abbf-3ea7-4610-9019-9858bfdeaf2d"
+OrderedCollections = "bac558e1-5e72-5ebc-8fee-abe8a469f55d"
+PolygonOps = "647866c9-e3ac-4575-94e7-e3d426903924"
+PyCall = "438e738f-606a-5dbb-bf0a-cddfbfd45ab0"
+cuDNN = "02a925ec-e4fe-4b08-9a7e-0d78e3d38ccd"
+
+[sources]
+DINCAE_utils = {rev = "main", url = "https://github.com/gher-uliege/DINCAE_utils.jl"}
