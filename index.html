@@ -305,7 +305,7 @@
     </div>
 
     <div class="filter-group">
-      <span class="label">Minimum citations</span>
+      <span class="label">🎓 Minimum citations</span>
       <div class="range-row">
         <input type="range" id="citation-filter" min="0" max="0" value="0" step="1">
         <output id="citation-filter-value">0</output>
@@ -313,7 +313,7 @@
     </div>
 
     <div class="filter-group">
-      <span class="label">Publication year</span>
+      <span class="label">📆​ Publication year</span>
       <div class="year-inputs">
         <input type="number" id="year-min" placeholder="From">
         <span>&ndash;</span>
@@ -364,9 +364,9 @@
 
 // One entry per tab. `file` is fetched fresh on each tab switch.
 const DATASETS = [
-  { id: "satellite", label: "Satellite", file: "satellite.csv" },
-  { id: "insitu",    label: "In situ",   file: "insitu.csv" },
-  { id: "hfradar",   label: "HF radar",  file: "hfradar.csv" },
+  { id: "satellite", label: "🛰️ Satellite", file: "satellite.csv" },
+  { id: "insitu",    label: "🚢 In situ",   file: "insitu.csv" },
+  { id: "hfradar",   label: "📡 High-frequency radar",  file: "hfradar.csv" },
 ];
 
 let currentDatasetId = null;
