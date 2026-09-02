@@ -56,6 +56,12 @@
     letter-spacing: -0.01em;
   }
 
+  header h2 {
+    margin: 0 0 3px;
+    font-size: 16px;
+    font-weight: 700;
+  }
+
   header p {
     margin: 0;
     color: var(--text-dim);
@@ -159,7 +165,7 @@
   }
 
   .metric-card .metric-value {
-    font-size: 26px;
+    font-size: 30px;
     font-weight: 700;
   }
 
@@ -216,13 +222,19 @@
     white-space: nowrap;
   }
 
+
+  td.doi-cell {
+    font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;
+    font-size: 12.5px; /* monospace fonts read larger at the same px size */
+  }
+ 
   a.doi-link, a.repo-link {
     color: var(--accent);
     text-decoration: none;
   }
   a.doi-link:hover, a.repo-link:hover { text-decoration: underline; }
   a.repo-link { font-size: 16px; }
-
+ 
   #result-count {
     font-weight: 600;
     margin-bottom: 10px;
@@ -280,9 +292,20 @@
 <body>
 
 <header>
-  <h1>Gap-filling methods explorer</h1>
-  <p>Browse gap-filling techniques for satellite, HF-radar, and in-situ data over the ocean.<br> Switch between datasets using the tabs below, then filter by method family, open-source availability, citation count, and publication year.</p>
+  <h1>Ocean gap-filling methods explorer</h1>
+  <p>Browse gap-filling techniques for satellite, HF-radar, and in-situ data</p>
+  <ol>
+    <li>Switch between datasets using the tabs below.</li>
+    <li>Filter by method family, open-source availability, citation count, and publication year.</li>
+    <li>Access the publications through their DOI.</li>
+  </ol>
+
+  <h2>How to contribute?</h2>
+  <p><i class="fa-solid fa-pen-to-square fa-lg"></i> <a href="https://github.com/ctroupin/gap-filling-methods/issues/new?template=%F0%9F%96%8A%EF%B8%8F-suggest-a-missing-paper.md">Suggest a missing publication</a> </p>
+  <p><i class="fa-regular fa-circle-xmark fa-lg"></i> <a href="https://github.com/ctroupin/gap-filling-methods/issues/new?template=%E2%9D%8C-report-an-error.md">Report an error</a> </p>
+
 </header>
+
 
 <main>
 
@@ -291,21 +314,21 @@
 
   <section id="filters">
     <div class="filter-group">
-      <span class="label">Method family</span>
+      <span class="label"><i class="fa-solid fa-globe fa-lg"></i> Method family</span>
       <div id="family-filter" class="checkbox-list"></div>
     </div>
 
     <div class="filter-group">
-      <span class="label">Open source</span>
+      <span class="label"> <i class="fa-solid fa-code  fa-lg"></i> Open source</span>
       <div id="opensource-filter" class="checkbox-list">
-        <label><input type="checkbox" value="Yes" checked> Open source</label>
-        <label><input type="checkbox" value="No" checked> Not open source</label>
-        <label><input type="checkbox" value="Unknown" checked> Unknown</label>
+        <label><input type="checkbox" value="Yes" checked> Yes</label>
+        <label><input type="checkbox" value="No" checked> No</label>
+        <!-- <label><input type="checkbox" value="Unknown" checked> Unknown</label> -->
       </div>
     </div>
 
     <div class="filter-group">
-      <span class="label">🎓 Minimum citations</span>
+      <span class="label"><i class="fa-solid fa-quote-left  fa-lg"></i> Minimum citations</span>
       <div class="range-row">
         <input type="range" id="citation-filter" min="0" max="0" value="0" step="1">
         <output id="citation-filter-value">0</output>
@@ -313,7 +336,7 @@
     </div>
 
     <div class="filter-group">
-      <span class="label">📆​ Publication year</span>
+      <span class="label"><i class="fa-regular fa-calendar-days fa-lg"></i>​ Publication year</span>
       <div class="year-inputs">
         <input type="number" id="year-min" placeholder="From">
         <span>&ndash;</span>
@@ -364,9 +387,9 @@
 
 // One entry per tab. `file` is fetched fresh on each tab switch.
 const DATASETS = [
-  { id: "satellite", label: "🛰️ Satellite", file: "satellite.csv" },
-  { id: "insitu",    label: "🚢 In situ",   file: "insitu.csv" },
-  { id: "hfradar",   label: "📡 High-frequency radar",  file: "hfradar.csv" },
+  { id: "satellite", label: "Satellite", file: "satellite.csv", icon: '<i class="fa-solid fa-satellite fa-lg"></i>'},
+  { id: "insitu",    label: "In situ",   file: "insitu.csv", icon: '<i class="fa-solid fa-ship fa-lg"></i>' },
+  { id: "hfradar",   label: "High-frequency radar",  file: "hfradar.csv", icon: '<i class="fa-solid fa-tower-broadcast fa-lg"></i>' },
 ];
 
 let currentDatasetId = null;
@@ -477,13 +500,13 @@ function loadDataset(datasetId) {
 function initTabs() {
   const nav = document.getElementById("dataset-tabs");
   nav.innerHTML = DATASETS.map(d =>
-    `<button role="tab" id="tab-${d.id}" data-id="${d.id}">${escapeHtml(d.label)}</button>`
+    `<button role="tab" id="tab-${d.id}" data-id="${d.id}">${d.icon || ""} ${escapeHtml(d.label)}</button>`
   ).join("");
   nav.querySelectorAll("button").forEach(btn => {
     btn.addEventListener("click", () => loadDataset(btn.dataset.id));
   });
 }
-
+ 
 function updateTabHighlight() {
   document.querySelectorAll("#dataset-tabs button").forEach(btn => {
     const active = btn.dataset.id === currentDatasetId;
@@ -569,6 +592,12 @@ function escapeHtml(s) {
   return (s || "").replace(/[&<>"']/g, c => ({
     "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;"
   }[c]));
+}
+
+function openSourceCell(value) {
+  if (value === "Yes") return "✅";
+  if (value === "No") return "❌";
+  return escapeHtml(value); // "Unknown" stays as text -- it isn't a yes/no answer
 }
 
 function doiCell(doi) {
@@ -667,9 +696,9 @@ function renderTable(rows) {
     html += `<td><span class="family-chip" style="background:${getFamilyColor(r.family)};">${escapeHtml(r.family)}</span></td>`;
     html += `<td>${escapeHtml(r.typeOfPaper)}</td>`;
     html += `<td class="method-description">${escapeHtml(r.description)}</td>`;
-    html += `<td>${doiCell(r.doi)}</td>`;
+    html += `<td class="doi-cell">${doiCell(r.doi)}</td>`;
     html += `<td>${r.citations !== null ? r.citations : ""}</td>`;
-    html += `<td>${escapeHtml(r.openSource)}</td>`;
+    html += `<td style="text-align:center;">${openSourceCell(r.openSource)}</td>`;
     html += `<td>${escapeHtml(r.language)}</td>`;
     html += `<td style="text-align:center;">${repoCell(r.repository)}</td>`;
     html += "</tr>";
