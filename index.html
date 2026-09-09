@@ -374,8 +374,10 @@
   <div id="dataset-load-note" style="display:none;"></div>
 
   <section id="filters">
+
+
     <div class="filter-group">
-      <span class="label"><i class="fa-solid fa-globe fa-lg"></i> Method family</span>
+      <span class="label"><i class="fa-solid fa-globe fa-lg"></i> Method family <button type="button" id="family-deselect-all" class="text-button">Deselect all</button></span>
       <div id="family-filter" class="checkbox-list"></div>
     </div>
 
@@ -483,37 +485,41 @@ const FAMILY_PALETTE = [
 // without a matching key falls back to a generic placeholder rather than
 // showing nothing.
 const FAMILY_DESCRIPTIONS = {
-  "1. Statistical / geostatistical interpolation":
+  "Statistical / geostatistical interpolation":
     "Missing values are obtained from the data's own spatial/temporal covariance structure. Examples: kriging, optimal interpolation, Barnes objective analysis.",
-  "2. EOF / mode decomposition":
+  "EOF / mode decomposition":
     "Reconstructs gaps using a truncated set of dominant spatio-temporal modes. Examples: DINEOF, VE-DINEOF, T-DINEOF.",
-  "3. Classical machine learning":
+  "Classical machine learning":
     "Learn nonlinear relationships from auxiliary predictors without stacked neural-network layers. Examples: random forests, support vector regression, self-organizing maps.",
-  "4. Deep learning (CNN/autoencoder)":
+  "Deep learning (CNN/autoencoder)":
     "Convolutional neural networks, learns spatial features directly from data. Examples: DINCAE, U-Net, OCNET.",
-  "5. GAN-based (generative)":
+  "GAN-based (generative)":
     "Reconstruction performed using 2 competing neural networks (the generator and the discriminator) trained together to have a realistic field. Examples: DGAN, CCGAN, PARAN.",
-  "6. Transformer / attention-based":
+  "Transformer / attention-based":
     "Every part of the reconstructed field draw on any other part, not just local neighbors. Examples: MAESSTRO, CRITER.",
-  "6. Open-boundary modal analysis (OMA)":
+  "Open-boundary modal analysis (OMA)":
     "Represents the current field as a sum of theoretically-derived open-boundary normal modes, computed from the domain's geometry and dynamics.",
-  "7. Multivariate / multi-source data fusion":
+  "Multivariate / multi-source data fusion":
     "Cross-cutting rather than a distinct algorithm: reconstructing one variable using correlated auxiliary fields (SST, SSH, wind, ...).",
-  "6. Variational method":
+  "Variational method":
     "Minimizes a cost function taking into account proximity to observations and field smoothness.",
   "Kriging / geostatistics":
     "Best-linear-unbiased-estimation methods that model the spatial covariance (variogram) of the data explicitly, then use it to interpolate at unsampled locations.",
-  "2. Splines":
+  "Splines":
     "Fits a smooth piecewise-polynomial surface through the data, balancing closeness-to-observations against overall smoothness.",
+  "OMA & related": "Based on the Open Modal Analysis technique.",
   "Other: numerical model":
-    "Fills gaps using a calibrated numerical ocean model run for the region, rather than a purely statistical or data-driven technique.",
+    "Use a numerical ocean model rather than statistical or data-driven techniques.",
   "Review / cross-cutting":
-    "Survey or comparative-benchmark papers that evaluate multiple method families against each other, rather than introducing a new technique.",
+    "Papers that compares different methods.",
 };
  
 const DEFAULT_FAMILY_DESCRIPTION = "No description available yet for this family -- add one to FAMILY_DESCRIPTIONS in index.html.";
  
 
+function stripFamilyPrefix(family) {
+  return (family || "").replace(/^\d+\.\s*/, "").trim();
+}
 
 
 const familyColorCache = {};
@@ -640,6 +646,11 @@ function initStaticFilterListeners() {
 
   document.getElementById("year-min").addEventListener("input", render);
   document.getElementById("year-max").addEventListener("input", render);
+  document.getElementById("family-deselect-all").addEventListener("click", () => {
+  document.querySelectorAll("#family-filter input").forEach(el => { el.checked = false; });
+  render();
+  });
+
 }
 
 
@@ -666,7 +677,7 @@ function renderFamilyGlossary(families) {
   container.innerHTML = families.map(f => `
     <div class="glossary-card" style="border-left-color:${getFamilyColor(f)};">
       <div class="glossary-family">${escapeHtml(f)}</div>
-      <div class="glossary-description">${escapeHtml(FAMILY_DESCRIPTIONS[f] || DEFAULT_FAMILY_DESCRIPTION)}</div>
+      <div class="glossary-description">${escapeHtml(FAMILY_DESCRIPTIONS[stripFamilyPrefix(f)] || DEFAULT_FAMILY_DESCRIPTION)}</div>
     </div>
   `).join("");
 }
