@@ -5,7 +5,7 @@ Method family,Type of paper,Method description,DOI,Citations,Year,Open source,La
 1. Geostatistical interpolation,Method,Optimal interpolation,10.1029/2006JC003756,39,2007,No,,,,,
 1. Geostatistical interpolation,Application,Optimal Interpolation (OI) and Unweighted Least Squares (ULS),10.1007/s10236-026-01813-8,0,2026,No,,,,,
 1. Geostatistical interpolation,Method,Spatio-Temporal Kriging,10.1109/JOE.2023.3283593,5,2023,No,,,,,
-1. Geostatistical interpolation,Application,Optimal interpolation and unweighted least squares fi,10.1175/JTECH-D-14-00109.1,15,2015,No,,,,,
+1. Geostatistical interpolation,Application,Optimal interpolation and unweighted least squares fit,10.1175/JTECH-D-14-00109.1,15,2015,No,,,,,
 1. Geostatistical interpolation,Application,Comparison unweighted least squares and optimal interpolation,10.1007/s10236-012-0533-9,41,2012,No,,,,,
 2. EOF / mode decomposition,Method,Complex Empirical Orthogonal Functions,10.1007/s00024-020-02613-x,12,2020,No,,,,,
 2. EOF / mode decomposition,Method,EOF/variational approach,10.1016/j.csr.2011.01.009,28,2011,No,,,,,
