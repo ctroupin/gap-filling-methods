@@ -210,6 +210,7 @@ let allRows = [];
 let hasYearColumn = false;
 
 function cleanRow(raw) {
+  const reference = raw["Reference"];
   const family = (raw["Method family"] || raw["Family"] || raw["Canonical Family"] || "Unspecified").trim() || "Unspecified";
 
   let openSource = (raw["Open source"] || "").trim().toLowerCase();
@@ -224,6 +225,7 @@ function cleanRow(raw) {
   const year = yearRaw ? parseInt(yearRaw[0], 10) : null;
 
   return {
+    reference,
     family,
     typeOfPaper: (raw["Type of paper"] || "").trim(),
     description: (raw["Method description"] || "").trim(),
@@ -489,7 +491,7 @@ function renderChart(rows) {
 }
 
 function renderTable(rows) {
-  const headers = ["Family", "Type of paper", "Method description", "DOI", "Citations", "Open source", "Language", "Repository"];
+  const headers = ["Reference", "Family", "Type of paper", "Method description", "DOI", "Citations", "Open source", "Language", "Repository"];
 
   let html = "<table><thead><tr>";
   headers.forEach(h => html += `<th>${h}</th>`);
@@ -497,6 +499,7 @@ function renderTable(rows) {
 
   rows.forEach(r => {
     html += "<tr>";
+    html += `<td>${escapeHtml(r.reference)}</td>`;
     html += `<td><span class="family-chip" style="background:${getFamilyColor(r.family)};">${escapeHtml(r.family)}</span></td>`;
     html += `<td>${escapeHtml(r.typeOfPaper)}</td>`;
     html += `<td class="method-description">${escapeHtml(r.description)}</td>`;
