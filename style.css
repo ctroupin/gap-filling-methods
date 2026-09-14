@@ -357,3 +357,49 @@ footer {
   font-size: 12px;
   padding: 24px;
 }
+
+  .contributors {
+    margin-top: 3rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid #e2e2e2;
+  }
+ 
+  .contributors h2 {
+    font-size: 1.1rem;
+    margin-bottom: 0.3rem;
+  }
+ 
+  .contributors-intro {
+    font-size: 0.9rem;
+    color: #555;
+    margin-bottom: 1rem;
+  }
+ 
+  .contributors-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+ 
+  .contributors-list li a {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    text-decoration: none;
+    color: inherit;
+    font-size: 0.85rem;
+  }
+ 
+  .contributors-list li a:hover span {
+    text-decoration: underline;
+  }
+ 
+  .contributor-avatar {
+    border-radius: 50%;
+    display: block;
+    border: 1px solid #ddd;
+  }
+
