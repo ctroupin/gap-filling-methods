@@ -362,10 +362,11 @@ function renderFamilyGlossary(families) {
 }
 
 
+
 function resetFilterState() {
   // Reset open-source checkboxes to all-checked
   document.querySelectorAll("#opensource-filter input").forEach(el => { el.checked = true; });
-
+ 
   // Recalculate + reset the citation slider for the new dataset's range
   const citationValues = allRows.map(r => r.citations).filter(c => c !== null);
   const maxCitations = citationValues.length ? Math.max(...citationValues) : 0;
@@ -373,11 +374,13 @@ function resetFilterState() {
   citationSlider.max = maxCitations;
   citationSlider.value = 0;
   document.getElementById("citation-filter-value").textContent = "0";
-
-  // Clear year range inputs
-  document.getElementById("year-min").value = "";
-  document.getElementById("year-max").value = "";
+ 
+  // Fixed default year range.
+  document.getElementById("year-min").value = "2000";
+  document.getElementById("year-max").value = "2026";
 }
+
+
 
 function getFilteredRows() {
   const checkedFamilies = [...document.querySelectorAll("#family-filter input:checked")].map(el => el.value);
@@ -409,7 +412,7 @@ function escapeHtml(s) {
 function openSourceCell(value) {
   if (value === "Yes") return "✅";
   if (value === "No") return "❌";
-  return escapeHtml(value); // "Unknown" stays as text -- it isn't a yes/no answer
+  return escapeHtml(value); // 
 }
 
 function doiCell(doi) {
@@ -480,12 +483,33 @@ function renderChart(rows) {
     autobinx: false,
   }));
 
+    // Dynamic range: derived from the years actually present in the
+  // current filtered selection, not a fixed/hardcoded window. Padded
+  // by half a year on each side so the outermost bars aren't clipped
+  // against the plot edges.
+  const plottedYears = rowsWithYear.map(r => r.year);
+  const dataYearMin = Math.min(...plottedYears);
+  const dataYearMax = Math.max(...plottedYears);
+  
+  const typedYearMin = parseInt(document.getElementById("year-min").value, 10);
+  const typedYearMax = parseInt(document.getElementById("year-max").value, 10);
+
+  const rangeMin = isNaN(typedYearMin) ? dataYearMin : typedYearMin;
+  const rangeMax = isNaN(typedYearMax) ? dataYearMax : typedYearMax;
+  const axisRange = [rangeMin - 0.5, rangeMax + 0.5];
+ 
+  // dtick fixed at 5 looks fine for wide ranges but is too sparse once
+  // filtering narrows things down to a handful of years -- scale it to
+  // the span so short ranges still show useful tick marks.
+  const span = dataYearMax - dataYearMin;
+  const dynamicDtick = span <= 8 ? 1 : span <= 20 ? 2 : 5;
+ 
   const layout = {
     barmode: "stack",
     bargap: 0.05,
     height: 380,
     margin: { t: 20, r: 20, b: 40, l: 50 },
-    xaxis: { title: "Publication year", dtick: 5 , range: [2000, 2027]},
+    xaxis: { title: "Publication year", dtick: dynamicDtick, range: axisRange },
     yaxis: { title: "Number of papers" },
     legend: { orientation: "h", y: -0.25 },
     font: { family: "-apple-system, Helvetica, Arial, sans-serif", size: 12 },
