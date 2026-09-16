@@ -1,2 +1,6 @@
 Reference,Method family,Type of paper,Method description,DOI,Citations,Year,Open source,Language,Repository,,Strengths,Limitations
-Gregory et al. (2024),4. Deep learning (CNN/autoencoder),Method,Probabilistic machine learning with local Gaussian Process,10.1038/s41467-024-51900-x,13,2024,Yes,Python, https://github.com/CPOMUCL/GPSat,,,
+Gregory et al. (2024),4. Deep learning (CNN/autoencoder),Method,Probabilistic machine learning with local Gaussian Process,10.1038/s41467-024-51900-x,13,2024,Yes,Python,https://github.com/CPOMUCL/GPSat,,,
+Ubelmann et al. (2015),Dynamic method?,Method,dynamic interpolation approach (based on potential vorticity conservation),10.1175/JTECH-D-14-00152.1,82,2015,No
+Le Traon et al. (1998),1. Optimal interpolation,Method,"Objective analysis with correction for the along-track long-wavelength error ",10.1175/1520-0426(1998)015<0522:AIMMOM>2.0.CO,630,1998,No
+Archambault et al. (2024),6. Transformer / attention-based,Method,"Attention-Based Encoder-Decoder deep learning network ",10.1029/2023MS004047,14,2024,Yes,Python,https://gitlab.lip6.fr/archambault/james2024
+Di et al. (2021),Dynamic method?,Method,"Parallel-Dynamic Interpolation ",10.1007/s11802-021-4664-9,1,2021,No
