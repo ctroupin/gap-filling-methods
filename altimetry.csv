@@ -1,0 +1,2 @@
+Reference,Method family,Type of paper,Method description,DOI,Citations,Year,Open source,Language,Repository,,Strengths,Limitations
+Gregory et al. (2024),4. Deep learning (CNN/autoencoder),Method,Probabilistic machine learning with local Gaussian Process,10.1038/s41467-024-51900-x,13,2024,Yes,Python, https://github.com/CPOMUCL/GPSat,,,
