@@ -18,6 +18,7 @@ Jones et al. (2015),1. Geostatistical interpolation,Application,"Combined tempor
 Zhao et al. (2024),1. Geostatistical interpolation,Method,Oxygen Deficit in the Bohai Sea using linear radial basis function (RBF-Linear),10.3390/jmse12030426,1,2024,No,,,,
 Zhao et al. (2023),1. Geostatistical interpolation,Method,"linear radial basis function (RBF-Linear) method ",10.1038/s41598-023-35123-6,14,2023,No,,,,
 Davis (1985),1. Geostatistical interpolation,Method,Objective mapping by least squares fitting,10.1029/JC090iC03p04773,55,1985,No,,,,
+Wen et al. (2025),1. Geostatistical interpolation,Method,Multi-scale optimal interpolation,10.1007/s13131-025-2546-5,,2025,No,,,,
 Craven and Wahba (1978),2. Splines,Method,Smoothing noisy data with spline functions,10.1007/BF01404567,2948,1978,No,,,,
 Franke (1985),2. Splines,Method,Thin plate splines with tension,10.1016/0167-8396(85)90011-1,44,1985,No,,,,
 Wahba and Wendelberger (1980),2. Splines,Method,Variational Objective Analysis Using Splines and Cross Validation,10.1175/1520-0493(1980)108<1122:SNMMFV>2.0.CO;2,361,1980,No,,,,

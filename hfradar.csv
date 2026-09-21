@@ -8,6 +8,8 @@ Deogharia and Sil (2023),1. Geostatistical interpolation,Method,Spatio-Temporal 
 Fang et al. (2015),1. Geostatistical interpolation,Application,Optimal interpolation and unweighted least squares fit,10.1175/JTECH-D-14-00109.1,15,2015,No,,,,,
 Kohut et al. (2012),1. Geostatistical interpolation,Application,Comparison unweighted least squares and optimal interpolation,10.1007/s10236-012-0533-9,41,2012,No,,,,,
 Lipa and Barrick (1983),1. Geostatistical interpolation,Method,Least-squares methods,10.1109/JOE.1983.1145578,220,1983,No,,,,,
+Manso-Narvarte et al. (2020),1. Geostatistical interpolation,Application,Reduced order optimal interpolation and discrete cosine transform penalized least square,10.5194/os-16-575-2020,7,2020,No,,,,,
+Ličer et al. (2020),1. Geostatistical interpolation,Application,Nearest-neighbour interpolation (in space) and linear interpolation (in time),10.5194/nhess-20-2335-2020,,2020,No,,,,,
 Kolukula et al. (2020),2. EOF / mode decomposition,Method,Complex Empirical Orthogonal Functions,10.1007/s00024-020-02613-x,12,2020,No,,,,,
 Yaremchuk and Sentchev (2011),2. EOF / mode decomposition,Method,EOF/variational approach,10.1016/j.csr.2011.01.009,28,2011,No,,,,,
 Frolov et al. (2012),2. EOF / mode decomposition,Method,EOF + linear autoregression model to predict the temporal dynamics of the EOF coefficients,10.1007/s10236-012-0553-5,45,2012,No,,,,,
