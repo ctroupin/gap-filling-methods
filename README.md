@@ -1,7 +1,8 @@
 # Gap-filling methods
 
 <p><a href="https://doi.org/10.5281/zenodo.22705361"><img src="https://zenodo.org/badge/1353404236.svg" alt="DOI"></a> <img alt="GitHub contributors" src="https://img.shields.io/github/contributors/ctroupin/gap-filling-methods"> <img alt="GitHub last commit (branch)" src="https://img.shields.io/github/last-commit/ctroupin/gap-filling-methods/gh-pages"> <img alt="GitHub Issues" src="https://img.shields.io/github/issues/ctroupin/gap-filling-methods">
-<img alt="GitHub Created At" src="https://img.shields.io/github/created-at/ctroupin/gap-filling-methods">
+<img alt="GitHub Created At" src="https://img.shields.io/github/created-at/ctroupin/gap-filling-methods">    <br>   
+<a href="[https://doi.org/10.5281/zenodo.22705361](https://landsealot.eu/)"><img src="https://img.shields.io/badge/Project-LandSeaLot-blue"> </a>    
 </p>
 
 ## Results
