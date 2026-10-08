@@ -13,10 +13,10 @@ The results are display in the [dashboard](https://ctroupin.github.io/gap-fillin
 
 ## Datasets
 
-Three types of data are considered:
-1. 🚢 In situ measurements.
-2. 🛰️ Satellite observations.
-3. 📡 High-frequency radar currents.
+Three types of data are considered:       
+🚢 In situ measurements.     
+🛰️ Satellite observations.    
+📡 High-frequency radar currents.
 
 🛰️ A 4th category is currently under construction: Along-track altimetry data.
 
