@@ -4,3 +4,4 @@ Ubelmann et al. (2015),Dynamic method?,Method,dynamic interpolation approach (ba
 Le Traon et al. (1998),1. Optimal interpolation,Method,"Objective analysis with correction for the along-track long-wavelength error ",10.1175/1520-0426(1998)015<0522:AIMMOM>2.0.CO,630,1998,No
 Archambault et al. (2024),6. Transformer / attention-based,Method,"Attention-Based Encoder-Decoder deep learning network ",10.1029/2023MS004047,14,2024,Yes,Python,https://gitlab.lip6.fr/archambault/james2024
 Di et al. (2021),Dynamic method?,Method,"Parallel-Dynamic Interpolation ",10.1007/s11802-021-4664-9,1,2021,No
+Le Guillou et al. (2025),Statistical / geostatistical interpolation,Method,hybrid methodology combining minimal physically based constraints with a variational scheme,10.1029/2024MS004689,12,2025,Yes,Python,https://github.com/leguillf/MASSH
