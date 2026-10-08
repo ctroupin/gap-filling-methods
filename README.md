@@ -5,18 +5,20 @@
 <a href="[https://doi.org/10.5281/zenodo.22705361](https://landsealot.eu/)"><img src="https://img.shields.io/badge/Project-LandSeaLot-blue"> </a>    
 </p>
 
-## Results
-https://ctroupin.github.io/gap-filling-methods/
+This project aims to build a comprehensive list of peer-review articles dealing with the gap-filling (interpolation, gridding, approximation, analysis, ...) of oceanographic data.
+
+## 📊 Results
+
+The results are display in the [dashboard](https://ctroupin.github.io/gap-filling-methods/).
 
 ## Datasets
-This project aims to build a comprehensive list of peer-review articles dealing with the gap-filling (interpolation, gridding, approximation, analysis, ...) of oceanographic data.
 
 Three types of data are considered:
 1. In situ measurements.
-2. Satellite observations.
+2. 📡 Satellite observations.
 3. High-frequency radar currents.
 
-A possible 4th category is considered: Along-track altimetry data.
+A 4th category is under construction: Along-track altimetry data.
 
 ## How to contribute
 
