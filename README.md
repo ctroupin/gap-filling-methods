@@ -14,13 +14,13 @@ The results are display in the [dashboard](https://ctroupin.github.io/gap-fillin
 ## Datasets
 
 Three types of data are considered:
-1. In situ measurements.
-2. 📡 Satellite observations.
-3. High-frequency radar currents.
+1. 🚢 In situ measurements.
+2. 🛰️ Satellite observations.
+3. 📡 High-frequency radar currents.
 
-A 4th category is under construction: Along-track altimetry data.
+🛰️ A 4th category is currently under construction: Along-track altimetry data.
 
 ## How to contribute
 
-<p><a href="https://github.com/ctroupin/gap-filling-methods/issues/new?template=%F0%9F%96%8A%EF%B8%8F-suggest-a-missing-paper.md">Suggest a missing publication</a> </p>
-<p><a href="https://github.com/ctroupin/gap-filling-methods/issues/new?template=%E2%9D%8C-report-an-error.md">Report an error</a> </p>
+The best way to help is to <a href="https://github.com/ctroupin/gap-filling-methods/issues/new?template=%F0%9F%96%8A%EF%B8%8F-suggest-a-missing-paper.md">list missing references</a>.     
+You are also welcome to <a href="https://github.com/ctroupin/gap-filling-methods/issues/new?template=%E2%9D%8C-report-an-error.md">report an error</a>.
