@@ -9,7 +9,7 @@ This project aims to build a comprehensive list of peer-review articles dealing 
 
 ## 📊 Results
 
-The results are display in the [dashboard](https://ctroupin.github.io/gap-filling-methods/).
+The results are displayed in the [dashboard](https://ctroupin.github.io/gap-filling-methods/).
 
 ## Datasets
 
